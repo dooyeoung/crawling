@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
+    <style type="text/css">
+    	.review_ratio{
+    		padding-left : 10px;
+    		font-size: 10px
+    	}
+    	.review-title{
+			font-size: 12px
+    	}
+    	.review-text{
+    		font-size: 12px
+    	}
+    	.is-naver{
+    		background-color: #00c558;
+    		color : #fff;
+    	}
+    	.uk-modal-container .uk-modal-dialog{
+    		width: 90%;
+    	}
+    </style>
+</head>
+<body> 
+
+	<br>
+	<div class="uk-container uk-text-center">
+		<h1 id="dashboard_title"></h1>
+		<table class="uk-table uk-table-small uk-table-divider">
+		    <thead>
+		        <tr>
+		            <th>상품명</th>
+		            <th style="min-width: 30px">형태</th>
+		            <th style="min-width: 80px">평점 평균</th>
+		            <th style="min-width: 150px">전체 리뷰 수</th>
+		            <th style="min-width: 100px">네이버 리뷰 수</th>
+		            <th style="min-width: 100px">자사몰 리뷰 수</th>
+		            <th style="min-width: 100px">포토 리뷰 수</th>
+		        </tr>
+		    </thead>
+		    <tbody id="product_list"> 
+		    </tbody>
+		</table>
+
+	</div> 
+
+
+
+	<div id="modal-container" class="uk-modal-container" uk-modal>
+	    <div class="uk-modal-dialog uk-modal-body">
+	        <button class="uk-modal-close-default" type="button" uk-close></button>
+	        <div class="uk-modal-header">
+            	<h2 class="uk-modal-title" id="product_title">Modal Title</h2>
+            	<div id="product_review_info">
+				</div>            		
+	        </div>
+
+	        <ul uk-tab>
+	        	 <li><a href="#" id="tab_photo_review">포토 리뷰 조회</a></li>
+    			<li><a href="#" id="tab_all_reviews">전체 리뷰 조회 (리뷰 글자수 정렬)</a></li>
+	        </ul>
+
+	       	<ul class="uk-switcher uk-margin">
+	       		<li>
+			        <div class="uk-modal-body" id="product_data"> 
+			          	<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="photo_review">
+			          	</div>
+			        </div>
+		    	</li>
+		    	<li>
+					<ul uk-tab>
+			        	<li><a href="#" id="tab_review_rating5">5점</a></li>
+		    			<li><a href="#" id="tab_review_rating4">4점</a></li>
+		    			<li><a href="#" id="tab_review_rating3">3점</a></li>
+		    			<li><a href="#" id="tab_review_rating2">2점</a></li>
+		    			<li><a href="#" id="tab_review_rating1">1점</a></li> 
+			        </ul>
+			        <ul class="uk-switcher uk-margin">
+	       				<li id="">
+	       					<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="review_rating5">
+			          		</div>
+	       				</li>
+	       				<li  id="">
+	       					<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="review_rating4">
+			          		</div>
+	       				</li>
+	       				<li  id="">
+	       					<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="review_rating3">
+			          		</div>
+	       				</li>
+	       				<li  id="">
+	       					<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="review_rating2">
+			          		</div>
+	       				</li>
+	       				<li id="">
+	       					<div class="uk-grid uk-grid-small uk-child-width-1-5" uk-grid id="review_rating1">
+			          		</div>
+	       				</li>  
+	       			</ul>
+		    	</li>
+	    	</ul>
+
+
+	    </div>
+	</div> 
+</body>
+
+
+
+
+
+<script src="review.js"></script>
+
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+	// datas = datas.sort(function(a, b){
+	// 	return a.t_count > b.t_count ? -1 : a.t_count < b.t_count ? 1 : 0;
+	// })
+ 	
+ 	let total_reviews = 0
+	for(var i=0; i < datas.length; i++){
+		let data = datas[i];
+		total_reviews += data.t_count
+
+		let cnt_class = ''
+		let cnt_txt =''
+		if(data.t_count > 100){
+			cnt_class = 'danger'
+			cnt_txt = '100+'
+		}
+		else if(data.t_count > 50){
+			cnt_class = 'warning'
+			cnt_txt = '50+'
+		}
+		else if(data.t_count > 20){
+			cnt_class = 'success'
+			cnt_txt = '20+'
+		}
+		else if(data.t_count > 10){
+			cnt_class = 'default'
+			cnt_txt = '10+'
+		}
+
+		let pcnt_class = ''
+		let pcnt_txt = ''
+		if(data.p_count > 0){
+			pcnt_class = 'default'
+			pcnt_txt = '1+'
+		}
+
+		$('#product_list').append(`<tr>
+			<td><a href="#modal-container" uk-toggle onclick="set_product_data(${i})">${data.name}</a></td>
+			<td>${data.type == 'set' ? 'set' : ''} </td>
+			<td>${data.rating_avg}</td>
+			<td>${data.t_count} <span class="uk-label uk-label-${cnt_class}">${cnt_txt}</span> </td>
+			<td>${data.n_count} <span class="review_ratio"> ${(data.n_count / data.t_count * 100).toFixed(2)} % <span> </td>
+			<td>${data.o_count} <span class="review_ratio"> ${(data.o_count / data.t_count * 100).toFixed(2)} % <span> </td>
+			<td>${data.p_count} <span class="review_ratio"> ${(data.p_count / data.t_count * 100).toFixed(2)} % <span> 
+			<span class="uk-label uk-label-${pcnt_class}">${pcnt_txt}</span>
+			</td>
+		</tr>`)  
+	}
+
+	 
+
+	$('#dashboard_title').append(`2020.03.27 리뷰 현황 <br>(${total_reviews}  reviews)`)
+
+	function set_product_data(i){ 
+		let data = datas[i] 
+		$('#product_title').text(data.name) 
+
+		$('#product_review_info').empty();
+		$('#product_review_info').append(`  <ul class="uk-breadcrumb">
+			<li>총 리뷰 수 ${data.t_count}  </li>  
+			<li>평균 평점  ${data.rating_avg}</li>   
+			<li>네이버 리뷰 수 ${data.n_count} <span class="review_ratio"> ${(data.n_count / data.t_count * 100).toFixed(2)} % </span> </li>
+			<li>자사몰 리뷰 수 ${data.o_count} <span class="review_ratio"> ${(data.o_count / data.t_count * 100).toFixed(2)} % </span> </li>
+			<li>포토 리뷰 수 ${data.p_count} <span class="review_ratio"> ${(data.p_count / data.t_count * 100).toFixed(2)} % </span> </li> 
+			</ul>`)
+
+
+		$('#photo_review').empty();
+		if(data.photo_review.length == 0){
+			$('#photo_review').text('포토 리뷰 없음')
+		}
+		for(pdata of data.photo_review){
+			let imgs = []
+			for(p of pdata.photo){
+				imgs.push(`<div class="uk-height-small uk-background-cover " data-src="https:${p}" uk-img> </div>`)
+			}
+
+			let tag =`<div>
+				<div class="uk-card uk-card-default"> 
+					<div class="uk-card-header uk-padding-small ">
+						<div class="review-title">${pdata.title} <br> ${pdata.rating}점 </div>
+						<p class="uk-text-meta uk-margin-remove-top">
+							${pdata.date} | ${pdata.writer} | ${pdata.view} views
+						</p>
+					</div>
+				 	<div class="uk-card-body uk-padding-small ">
+						${imgs.join(' ')}
+					</div>
+					<div class="uk-card-footer uk-padding-small review-text">
+						${pdata.text}
+					</div>
+				</div>
+			</div>`
+
+			$('#photo_review').append(tag)
+		}
+
+
+		// 평점별 리뷰 표시
+		for(let i=1; i< 6; i++){
+			$(`#review_rating${i}`).empty()
+
+			let rating_datas = data.rating_data[`${i}`]
+
+			rating_datas = rating_datas.sort(function(a, b){
+					return a.text.length > b.text.length ? -1 :  a.text.length < b.text.length ? 1: 0;
+				})
+
+			$(`#tab_review_rating${i}`).empty()
+			$(`#tab_review_rating${i}`).append(`${i}점 <span class="uk-badge">${rating_datas.length}</span>`)
+
+
+			for(rdata of rating_datas	){
+				
+				let tag =`<div>
+					<div class="uk-card uk-card-default"> 
+						<div class="uk-card-header uk-padding-small ">
+							<div class="review-title">${rdata.title} </div>
+							<p class="uk-text-meta uk-margin-remove-top">
+								${rdata.date} | <span class="${rdata.writer == "네이****" ? "is-naver" : '' }">${rdata.writer} </span> <br>
+								view : ${rdata.view} | rating :  ${rdata.rating} 
+							</p>
+						</div> 
+						<div class="uk-card-footer uk-padding-small review-text">
+							${rdata.text}
+						</div>
+					</div>
+				</div>`
+
+				$(`#review_rating${i}`).append(tag)
+			}
+		}
+		 
+	} 
+</script>
+</html>
